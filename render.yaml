@@ -3,6 +3,7 @@ services:
   - type: web
     name: votex-frontend
     env: static
+    plan: free
     buildCommand: cd frontend && npm install && npm run build
     staticPublishPath: frontend/dist
     envVars:
@@ -21,6 +22,7 @@ services:
   - type: web
     name: votex-backend
     env: docker
+    plan: free
     dockerContext: backend
     dockerfilePath: backend/Dockerfile
     envVars:
@@ -37,6 +39,7 @@ services:
   - type: web
     name: votex-ai-service
     env: python
+    plan: free
     buildCommand: cd ai-service && pip install -r requirements.txt
     startCommand: cd ai-service && python app.py
     envVars:
