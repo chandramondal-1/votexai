@@ -36,11 +36,13 @@ const Register = () => {
 
     try {
       // 1. Register user in Spring Boot backend
-      const res = await axios.post('http://localhost:8080/api/auth/signup', formData);
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+      const res = await axios.post(`${backendUrl}/api/auth/signup`, formData);
       
       // 2. Register face in AI service
       if (image) {
-        await axios.post('http://localhost:5001/register-face', {
+        const aiUrl = import.meta.env.VITE_AI_SERVICE_URL || 'http://localhost:5001';
+        await axios.post(`${aiUrl}/register-face`, {
           user_id: formData.username,
           image: image
         });

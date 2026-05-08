@@ -1,0 +1,44 @@
+services:
+  # Frontend (Vite)
+  - type: web
+    name: votex-frontend
+    env: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: frontend/dist
+    envVars:
+      - key: VITE_BACKEND_URL
+        fromService:
+          name: votex-backend
+          type: web
+          property: host
+      - key: VITE_AI_SERVICE_URL
+        fromService:
+          name: votex-ai-service
+          type: web
+          property: host
+
+  # Backend (Spring Boot)
+  - type: web
+    name: votex-backend
+    env: java
+    buildCommand: cd backend && mvn clean install -DskipTests
+    startCommand: cd backend && java -jar target/*.jar
+    envVars:
+      - key: AI_SERVICE_URL
+        fromService:
+          name: votex-ai-service
+          type: web
+          property: host
+      # Database env vars should be added in Render UI or here if using a Blueprint for DB
+      - key: SPRING_DATASOURCE_URL
+        value: ${DATABASE_URL} # Example if using a managed DB
+
+  # AI Service (Python/Flask)
+  - type: web
+    name: votex-ai-service
+    env: python
+    buildCommand: cd ai-service && pip install -r requirements.txt
+    startCommand: cd ai-service && python app.py
+    envVars:
+      - key: PORT
+        value: 5001
