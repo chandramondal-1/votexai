@@ -37,10 +37,10 @@ services:
   # AI Service (Python/Flask)
   - type: web
     name: votex-ai-service
-    env: python
+    env: docker
     plan: free
-    buildCommand: cd ai-service && pip install -r requirements.txt
-    startCommand: cd ai-service && python app.py
+    dockerContext: ai-service
+    dockerfilePath: ai-service/Dockerfile
     envVars:
       - key: PORT
         value: 5001
