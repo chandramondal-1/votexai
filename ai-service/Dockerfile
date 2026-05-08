@@ -1,20 +1,12 @@
-FROM python:3.10-slim
-
-# Install system dependencies for dlib and opencv
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    cmake \
-    libopenblas-dev \
-    liblapack-dev \
-    libx11-dev \
-    libgtk-3-dev \
-    && rm -rf /var/lib/apt/lists/*
+# Use a pre-built image that already contains dlib and face_recognition
+# This avoids the memory-intensive compilation step on Render
+FROM animenosekai/face-recognition:latest
 
 WORKDIR /app
 
-# Install face_recognition and other dependencies
-# Using --no-cache-dir to save memory during build
-RUN pip install --no-cache-dir face_recognition flask flask-cors opencv-python-headless numpy scikit-learn pandas
+# Install only the light dependencies
+# opencv-python-headless is much smaller
+RUN pip install --no-cache-dir flask flask-cors opencv-python-headless scikit-learn pandas
 
 COPY . .
 
